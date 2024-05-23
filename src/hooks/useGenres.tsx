@@ -7,7 +7,9 @@ export interface Genre {
 const useGenres = (): Genre[] => {
   const { books } = useBooks();
 
-  const genres: string[] = Array.from(new Set(books.map((book) => book.genre)));
+  const genres: string[] = Array.from(
+    new Set(books.map((book) => book.genre))
+  ).sort();
 
   const genreObjects: Genre[] = genres.map((genre) => ({ name: genre }));
 

@@ -1,6 +1,6 @@
-import { Center, HStack, Image, Text } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
-import logo from "/src/assets/bgn.png";
+import { HStack, Image, Text, Box } from "@chakra-ui/react";
+import { Link, useLocation } from "react-router-dom";
+import logo from "/src/assets/bgenius.png";
 import ColorModeSwitch from "./ColorModeSwitch";
 import { Button } from "@chakra-ui/react";
 import { Flex } from "@chakra-ui/react";
@@ -11,36 +11,54 @@ interface Props {
 }
 
 const NavBar = ({ onSearch }: Props) => {
+  const location = useLocation();
+  const isMainPage = location.pathname === "/";
+
   return (
-    <Flex justifyContent="space-between" alignItems="center" padding="10px">
+    <Flex
+      justifyContent="space-between"
+      alignItems="center"
+      padding="10px"
+      bg="#AF8F6F"
+      position="relative"
+    >
       <Link to="/">
-        {" "}
-        {/* Link to the main page */}
         <HStack spacing={2}>
           <Image src={logo} boxSize="75px" />
-          <Text fontSize={"l"} fontWeight="bold" color="#52322D">
+          <Text fontSize={"l"} fontWeight="bold" color="#543310">
             Bookshelf Genius
           </Text>
         </HStack>
       </Link>
 
       <HStack>
-        <SearchInput onSearch={onSearch} />
+        {isMainPage && <SearchInput onSearch={onSearch} />}
         <ColorModeSwitch />
         <Link to="/signup">
-          {" "}
-          {/* Use Link component for navigation */}
-          <Button
-            mr={4}
-            bg="#cfcbbc"
-            color="#52322D"
-            padding="20px"
-            borderRadius={10}
-          >
-            Sign Up
-          </Button>
+          {isMainPage && (
+            <Button
+              mr={4}
+              bg="#74512D"
+              color="#F8F4E1"
+              padding="20px"
+              borderRadius={10}
+            >
+              Sign Up
+            </Button>
+          )}
         </Link>
       </HStack>
+
+      {/* Add the bold brown line */}
+      <Box
+        position="absolute"
+        bottom="0"
+        left="0"
+        width="100%"
+        height="2px"
+        bg="#543310"
+        fontWeight="bold"
+      />
     </Flex>
   );
 };

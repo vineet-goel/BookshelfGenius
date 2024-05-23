@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   Card,
   CardBody,
@@ -7,25 +8,44 @@ import {
   Button,
   Flex,
   Box,
+  useColorMode,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { Book } from "../hooks/useBooks";
 import useBooks from "../hooks/useBooks";
 import BookPageContainer from "./BookPageContainer";
 import fallback from "../images/fallback_image.jpg";
+import FavoriteButton from "./FavoriteButton";
 
 const BookPage = () => {
   const { id } = useParams(); // Get book id from URL params
   const book: Book | undefined = useBooks().books.find(
     (book) => book.id === parseInt(String(id))
   );
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === "dark" ? "#543310" : "#F8F4E1";
+  const textColor = colorMode === "dark" ? "#F8F4E1" : "#543310";
+  const cardBgColor = colorMode === "dark" ? "#74512D" : "#AF8F6F";
+
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const handleFavoriteClick = () => {
+    setIsFavorite(!isFavorite);
+  };
+
+  // Debugging: Log the image URL to the console
+  useEffect(() => {
+    if (book) {
+      console.log("Book image URL:", book.image);
+    }
+  }, [book]);
 
   if (!book) return <div>Book not found</div>;
 
   return (
     <>
-      <BookPageContainer>
-        <Card marginRight={10} marginTop={5} marginBottom={15}>
+      <BookPageContainer bgColor={bgColor} textColor={textColor}>
+        <Card marginRight={10} marginTop={5} marginBottom={15} bg={cardBgColor}>
           <Flex>
             <Box
               borderRadius={10}
@@ -46,16 +66,18 @@ const BookPage = () => {
               />
             </Box>
             <CardBody marginRight={10}>
-              <Heading fontSize="2xl" marginY="5">
+              <Heading fontSize="2xl" marginY="5" color={textColor}>
                 {book.title}
               </Heading>
 
-              <Text fontWeight="bold" marginBottom="4">
+              <Text fontWeight="bold" marginBottom="4" color={textColor}>
                 {book.author}
               </Text>
-              <Text>Pages: {book.pageCount}</Text>
-              <Text marginBottom="4">Genre: {book.genre}</Text>
-              <Text marginBottom={8}>
+              <Text color={textColor}>Pages: {book.pageCount}</Text>
+              <Text marginBottom="4" color={textColor}>
+                Genre: {book.genre}
+              </Text>
+              <Text marginBottom={8} color={textColor}>
                 Books are timeless vessels of knowledge, imagination, and
                 enlightenment. As quintessential artifacts of human
                 civilization, they transcend epochs, offering insights into the
@@ -70,9 +92,15 @@ const BookPage = () => {
                 companions, inviting readers to embark on journeys of discovery
                 and introspection, enriching lives one page at a time.
               </Text>
-              <Button bg="#cfcbbc" color="#52322D" alignSelf="end">
-                Borrow
-              </Button>
+              <Flex justifyContent="space-between" alignItems="center">
+                <Button bg="#F8F4E1" color="#52322D" alignSelf="end">
+                  Borrow
+                </Button>
+                <FavoriteButton
+                  isFavorite={isFavorite}
+                  onClick={handleFavoriteClick}
+                />
+              </Flex>
             </CardBody>
           </Flex>
         </Card>

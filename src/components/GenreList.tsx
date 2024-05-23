@@ -1,5 +1,13 @@
 import useGenres, { Genre } from "../hooks/useGenres";
-import { Box, HStack, List, ListItem, Text, Button } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  List,
+  ListItem,
+  Text,
+  Button,
+  useColorModeValue,
+} from "@chakra-ui/react";
 
 interface Props {
   onSelectedGenre: (genre: Genre | null) => void;
@@ -8,13 +16,16 @@ interface Props {
 
 const GenreList = ({ selectedGenre, onSelectedGenre }: Props) => {
   const genres = useGenres();
+  const bgColor = useColorModeValue("#74512D", "#AF8F6F");
+  const textColor = useColorModeValue("#F8F4E1", "#543310");
+  const buttonColor = useColorModeValue("#F8F4E1", "#543310");
 
   return (
     <Box
-      width=" 130px"
+      width="130px"
       borderRadius={5}
-      bg="#EDE9D8"
-      color="#52322D"
+      bg={bgColor}
+      color={textColor}
       pt="5px"
       paddingX="10px"
     >
@@ -37,7 +48,7 @@ const GenreList = ({ selectedGenre, onSelectedGenre }: Props) => {
                   genre.name === selectedGenre?.name ? "bold" : "normal"
                 }
                 onClick={() => onSelectedGenre(genre)}
-                color="#52322D"
+                color={buttonColor}
                 variant="link"
                 fontSize={"l"}
                 paddingY="4px"

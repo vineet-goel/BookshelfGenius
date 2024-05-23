@@ -7,7 +7,7 @@ interface Props {
   textColor: string;
 }
 
-const BookPageContainer = ({ children, bgColor, textColor }: Props) => {
+const UserPageContainer = ({ children, bgColor, textColor }: Props) => {
   return (
     <Box borderRadius={10} overflow="hidden" bg={bgColor} color={textColor}>
       {children}
@@ -15,4 +15,4 @@ const BookPageContainer = ({ children, bgColor, textColor }: Props) => {
   );
 };
 
-export default BookPageContainer;
+export default UserPageContainer;

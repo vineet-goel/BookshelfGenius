@@ -1,9 +1,4 @@
-import {
-  Input,
-  InputGroup,
-  InputLeftElement,
-  ColorModeProvider,
-} from "@chakra-ui/react";
+import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { useRef } from "react";
 import { BsSearch } from "react-icons/bs";
 
@@ -24,22 +19,26 @@ const SearchInput = ({ onSearch }: Props) => {
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        if (ref.current) onSearch(ref.current.value);
+        handleSearch();
       }}
     >
-      <ColorModeProvider value="light">
-        <InputGroup>
-          <InputLeftElement children={<BsSearch />} />
-          <Input
-            ref={ref}
-            borderRadius={20}
-            placeholder="Search books..."
-            variant="filled"
-            width="900px"
-            onChange={handleSearch}
-          />
-        </InputGroup>
-      </ColorModeProvider>
+      <InputGroup>
+        <InputLeftElement children={<BsSearch color="#543310" />} />
+        <Input
+          ref={ref}
+          borderRadius={20}
+          placeholder="Search books..."
+          variant="filled"
+          width="900px"
+          bg="#F8F4E1"
+          color="#000"
+          _placeholder={{ color: "#74512D" }}
+          _hover={{
+            bg: "#F8F4E1", // background color on hover
+            color: "#000", // text color on hover
+          }}
+        />
+      </InputGroup>
     </form>
   );
 };

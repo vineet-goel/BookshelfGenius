@@ -6,10 +6,17 @@ const ColorModeSwitch = () => {
   return (
     <HStack>
       <Switch
-        colorScheme="#5F370E"
         isChecked={colorMode === "dark"}
         onChange={toggleColorMode}
-      ></Switch>
+        sx={{
+          ".chakra-switch__track": {
+            backgroundColor: colorMode === "dark" ? "#543310" : "#F8F4E1",
+          },
+          ".chakra-switch__thumb": {
+            backgroundColor: colorMode === "dark" ? "#F8F4E1" : "#543310",
+          },
+        }}
+      />
       <Text color="#52322D" whiteSpace="nowrap" fontSize={"s"} padding={2}>
         Dark Mode
       </Text>
