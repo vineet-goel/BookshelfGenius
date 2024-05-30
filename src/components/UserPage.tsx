@@ -30,15 +30,6 @@ const UserPage = () => {
             minWidth="fit-content"
           ></Box>
           <CardBody marginRight={10}>
-            <Heading
-              fontSize="2xl"
-              marginY="5"
-              color={textColor}
-              textAlign={"right"}
-            >
-              Bellgin13
-            </Heading>
-
             <Text fontWeight="bold" marginBottom="4" color={textColor}>
               Favorite Books
             </Text>

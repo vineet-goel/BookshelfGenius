@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Cookies from "js-cookie";
 
 import {
   Box,
@@ -20,22 +21,45 @@ function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
+  const addUser = async (username: string, email: string, password: string) => {
+    await fetch('http://localhost:8080/api/users', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: username,
+        email: email,
+        password: password,
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+    .then((response) => {
+      setUsername('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+    })
+    .catch((err) => {
+      console.log(err.message);
+      throw err;
+    });
+  };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
     }
-    if (
-      username === "Bellgin13" &&
-      email === "belgin@test.com" &&
-      password === "test123"
-    ) {
-      // Redirect to the user page after successful sign-up
-      navigate("/user");
-    } else {
-      alert("Please fill in the correct details.");
-    }
+    addUser(username, email, password)
+        .then(data => {
+          Cookies.set('username', username)
+          navigate("/user");
+        })
+        .catch(err => {
+          alert("Not able to add user. Please try later");
+        })
+    ;
   };
 
   const bgColor = useColorModeValue("lightModeBg", "darkModeBg");

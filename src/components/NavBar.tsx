@@ -5,6 +5,7 @@ import ColorModeSwitch from "./ColorModeSwitch";
 import { Button } from "@chakra-ui/react";
 import { Flex } from "@chakra-ui/react";
 import SearchInput from "./SearchInput";
+import Cookies from "js-cookie";
 
 interface Props {
   onSearch: (searchText: string) => void;
@@ -13,6 +14,8 @@ interface Props {
 const NavBar = ({ onSearch }: Props) => {
   const location = useLocation();
   const isMainPage = location.pathname === "/";
+  const isUserPage = location.pathname === "/user";
+  const username = Cookies.get("username");
 
   return (
     <Flex
@@ -35,7 +38,7 @@ const NavBar = ({ onSearch }: Props) => {
         {isMainPage && <SearchInput onSearch={onSearch} />}
         <ColorModeSwitch />
         <Link to="/signup">
-          {isMainPage && (
+          {isMainPage && !username && (
             <Button
               mr={4}
               bg="#74512D"
@@ -47,6 +50,21 @@ const NavBar = ({ onSearch }: Props) => {
             </Button>
           )}
         </Link>
+
+        <Link to="/user">
+          {!!username && (
+              <Button
+                  mr={4}
+                  bg="#74512D"
+                  color="#F8F4E1"
+                  padding="20px"
+                  borderRadius={10}
+              >
+                {username}
+              </Button>
+          )}
+        </Link>
+
       </HStack>
 
       {/* Add the bold brown line */}
