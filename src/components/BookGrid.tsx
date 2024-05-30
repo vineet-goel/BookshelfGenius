@@ -9,13 +9,16 @@ interface Props {
   Books: Book[];
   selectedGenre: Genre | null;
   selectedAuthor: Author | null;
+  available: boolean | null;
 }
 
-const BookGrid = ({ Books, selectedGenre, selectedAuthor }: Props) => {
+const BookGrid = ({ Books, selectedGenre, selectedAuthor, available }: Props) => {
   const filteredBooks = Books.filter(
     (book) =>
       (!selectedGenre || book.genre === selectedGenre.name) &&
-      (!selectedAuthor || book.author === selectedAuthor.name)
+      (!selectedAuthor || book.author === selectedAuthor.name) &&
+      (available == null  || book.available === available)
+
   );
 
   return (

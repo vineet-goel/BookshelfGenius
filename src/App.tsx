@@ -63,6 +63,7 @@ function App() {
                   Books={filteredBooks}
                   selectedGenre={selectedGenre}
                   selectedAuthor={selectedAuthor}
+                  available={true}
                 />
               }
             />
