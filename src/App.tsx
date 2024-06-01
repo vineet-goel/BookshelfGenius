@@ -4,27 +4,35 @@ import BookGrid from "./components/BookGrid";
 import SignUpPage from "./components/SignUpPage";
 import BookPage from "./components/BookPage";
 import UserPage from "./components/UserPage";
-import useBooks from "./hooks/useBooks";
+import useBooks, {Book, getBooks} from "./hooks/useBooks";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import GenreList from "./components/GenreList";
 import AuthorList from "./components/AuthorList";
 import { Genre } from "./hooks/useGenres";
 import { Author } from "./hooks/useAuthors";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 
 function App() {
-  const { books } = useBooks();
+  // const { books } = useBooks();
+  const [books, setBooks] = useState<Book[]>();
+  const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
+
   const [selectedGenre, setSelectedGenre] = useState<Genre | null>(null);
   const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const filteredBooks = books.filter(
-    (book) =>
-      (!selectedGenre || book.genre === selectedGenre.name) &&
-      (!selectedAuthor || book.author === selectedAuthor.name) &&
-      (book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        book.author.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  useEffect(() => {
+    getBooks().then(response => {
+      setFilteredBooks(response.filter(
+          (book) =>
+              (!selectedGenre || book.genre === selectedGenre.name) &&
+              (!selectedAuthor || book.author === selectedAuthor.name) &&
+              (book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  book.author.toLowerCase().includes(searchQuery.toLowerCase()))
+      ));
+    });
+
+  }, []);
 
   return (
     <Router>
@@ -63,7 +71,7 @@ function App() {
                   Books={filteredBooks}
                   selectedGenre={selectedGenre}
                   selectedAuthor={selectedAuthor}
-                  available={true}
+                  available={null}
                 />
               }
             />

@@ -1,17 +1,29 @@
-import useBooks from "./useBooks";
+import useBooks, {getBooks} from "./useBooks";
+import {useEffect, useState} from "react";
 
 export interface Author {
   name: string;
 }
 
 const useAuthors = (): Author[] => {
-  const { books } = useBooks();
 
-  const authors: string[] = Array.from(
-    new Set(books.map((book) => book.author))
-  ).sort();
+  const [authors, setAuthors] = useState<String[]>([]);
+  const [authorObjects, setAuthorObjects] = useState<any>([]);
 
-  const authorObjects: Author[] = authors.map((author) => ({ name: author }));
+
+  useEffect(() => {
+    getBooks().then(response => {
+      setAuthors(Array.from(
+          new Set(response.map((book) => book.author))
+      ).sort());
+    });
+  }, []);
+
+
+  useEffect(() => {
+    var map = authors.map((author) => ({name: author}));
+    setAuthorObjects(map)
+  }, [authors]);
 
   return authorObjects;
 };

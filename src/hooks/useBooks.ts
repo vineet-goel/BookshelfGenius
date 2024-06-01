@@ -14,8 +14,9 @@ export class Book {
     public genre: string;
     public available: boolean;
     public comments: Comment[];
+    public borrowedBy: string;
 
-    constructor(id: number, title: string, author: string, pageCount: number, image: string, genre: string, available: boolean) {
+    constructor(id: number, title: string, author: string, pageCount: number, image: string, genre: string, available: boolean, borrowedBy: string) {
       this.id = id;
       this.title = title;
       this.author = author;
@@ -23,7 +24,8 @@ export class Book {
       this.image = image;
       this.genre = genre;
       this.available = available;
-        this.comments = [];
+      this.comments = [];
+      this.borrowedBy = borrowedBy;
     }
     getId(): number {
       return this.id;
@@ -86,56 +88,39 @@ export class Book {
     getComments(): Comment[] {
         return this.comments;
     }
+
+    getBorrowedBy(): string {
+        return this.borrowedBy;
+    }
+
+    setBorrowedBy(value: string) {
+        this.borrowedBy = value;
+    }
 }
 
-const books: Book[] = [
-    new Book(1, "The Great Gatsby", "F. Scott Fitzgerald", 180, "./src/images/book1.jpg", "Classics", false),
-    new Book(2, "Pride and Prejudice", "Jane Austen", 320, "./src/images/book2.jpg", "Classics", true),
-    new Book(3, "Crime and Punishment", "Fyodor Mihaylovic Dostoyevski", 687, "./src/images/book3.jpg", "Classics", true),
-    new Book(4, "To Kill a Mockingbird", "Harper Lee", 360, "./src/images/book4.jpg", "Classics", true),
-    new Book(5, "The Catcher in the Rye", "J. D. Salinger", 234, "./src/images/book5.jpg", "Classics", true),
-    new Book(6, "1984", "George Orwell", 352, "./src/images/book6.jpg", "Classics", true),
-    new Book(7, "Moby-Dick", "Herman Melville", 728, "./src/images/book7.jpg", "Classics", true),
-    new Book(8, "War and Peace", "Leo Tolstoy", 1823, "./src/images/book8.jpg", "Classics", true),
-    new Book(9, "Alice's Adventures in Wonderland", "Lewis Carroll", 128, "./src/images/book9.jpg", "Classics", true),
-    new Book(10, "Jane Eyre", "Charlotte Bronte", 608, "./src/images/book10.jpg", "Classics", true),
-    new Book(11, "Great Expectations", "Charles Dickens", 656, "./src/images/book11.jpg", "Classics", true),
-    new Book(12, "The Adventures of Huckleberry Finn", "Mark Twain", 343, "./src/images/book12.jpg", "Classics", true),
-    new Book(13, "Wuthering Heights", "Emily Bronte", 443, "./src/images/book13.jpg", "Classics", true),
-    new Book(14, "The Picture of Dorian Gray", "Oscar Wilde", 280, "./src/images/book14.jpg", "Classics", true),
-    new Book(15, "Don Quixote", "Miguel de Cervantes", 906, "./src/images/book15.jpg", "Classics", true),
-    new Book(16, "Anna Karenina", "Leo Tolstoy", 1035, "./src/images/book16.jpg", "Classics", true),
-    new Book(17, "Frankenstein", "Mary Shelley", 256, "./src/images/book17.jpg", "Classics", true),
-    new Book(18, "The Brothers Karamazov", "Fyodor Dostoyevsky", 1080, "./src/images/book18.jpg", "Classics", true),
-    new Book(19, "The Grapes of Wrath", "John Steinbeck", 540, "./src/images/book19.jpg", "Classics", true),
-    new Book(20, "The Scarlet Letter", "Nathaniel Hawthorne", 264, "./src/images/book20.jpg", "Classics", true),
-    new Book(21, "The Girl with the Dragon Tattoo", "Stieg Larsson", 646, "./src/images/book21.jpg", "Mystery", true),
-    new Book(22, "Gone Girl", "Gillian Flynn", 600, "./src/images/book22.jpg", "Mystery", true),
-    new Book(23, "The Hound of the Baskervilles", "Arthur Conan Doyle", 138, "./src/images/book23.jpg", "Mystery", true),
-    new Book(24, "Big Little Lies", "Liane Moriarty", 416, "./src/images/book24.jpg", "Mystery", true),
-    new Book(25, "The Da Vinci Code", "Dan Brown", 495, "./src/images/book25.jpg", "Mystery", true),
-    new Book(26, "The Lord of the Rings", "J.R.R. Tolkien", 520, "./src/images/book26.jpg", "Fantasy", true),
-    new Book(27, "Harry Potter and the Sorcerer's Stone", "J.K. Rowling", 300, "./src/images/book27.jpg", "Fantasy", true),
-    new Book(28, "A Song of Ice and Fire", "George R.R. Martin", 847, "./src/images/book28.jpg", "Fantasy", true),
-    new Book(29, "The Name of the Wind", "Patrick Rothfuss", 736, "./src/images/book29.jpg", "Fantasy", true),
-    new Book(30, "Mistborn: The Final Empire", "Brandon Sanderson", 668, "./src/images/book30.jpg", "Fantasy", true),
-    new Book(31, "Dune", "Frank Herbert", 712, "./src/images/book31.jpg", "Science Fiction", true),
-    new Book(32, "Neuromancer", "William Gibson", 336, "./src/images/book32.jpg", "Science Fiction", true),
-    new Book(33, "The Martian", "Andy Weir", 416, "./src/images/book33.jpg", "Science Fiction", true),
-    new Book(34, "Foundation", "Isaac Asimov", 304, "./src/images/book34.jpg", "Science Fiction", true),
-    new Book(35, "The Notebook", "Nicholas Sparks", 276, "./src/images/book35.jpg", "Romance", true),
-    new Book(36, "Outlander", "Diana Gabaldon", 703, "./src/images/book36.jpg", "Romance", true),
-    new Book(37, "Me Before You", "Jojo Moyes", 476, "./src/images/book37.jpg", "Romance", true),
-    new Book(38, "The Fault in Our Stars", "John Green", 320, "./src/images/book38.jpg", "Romance", true),
-    new Book(39, "The Silence of the Lambs", "Thomas Harris", 432, "./src/images/book39.jpg", "Mystery", true),
-    new Book(40, "The Magician's Nephew (Narnia 1)", "C. S. Lewis", 240, " ./src/images/book40.jpg", "Fantasy", true),
-    new Book(41, "Brave New World", "Aldous Huxley", 288, "./src/images/book41.jpg", "Science Fiction", true),
-    new Book(42, "Gone with the Wind", "Margaret Mitchell", 960, " ./src/images/book42.jpg", "Romance", true),
+export const getBooks = async (): Promise<Book[]> => {
+    return await fetch('http://localhost:8080/api/books', {
+        method: 'GET',
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        },
+    })
+        .then(response => response.json())
+        .then((responseBooks: Book[]) => {
 
-];
+            const bookList: Book[] = [];
 
-const useBooks = (selectedGenre?: Genre | null) => {
-    return {books, selectedGenre};
+            responseBooks.forEach(book => {
+                let bookToAdd = new Book(book.id, book.title, book.author, book.pageCount, book.image, book.genre, book.available, book.borrowedBy);
+                bookList.push(bookToAdd);
+            })
+            return bookList;
+
+        })
+        .catch((err) => {
+            console.log(err.message);
+            throw err;
+        });
 };
 
-export default useBooks;
+export default getBooks;
