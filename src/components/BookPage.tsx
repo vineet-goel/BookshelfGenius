@@ -15,7 +15,7 @@ import {
   ListItem,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import { Book, getBooks } from "../hooks/useBooks";
+import { Book, getBooks, Comment } from "../hooks/useBooks";
 import BookPageContainer from "./BookPageContainer";
 import fallback from "../images/fallback_image.jpg";
 import FavoriteButton from "./FavoriteButton";
@@ -31,46 +31,50 @@ const BookPage = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   // const [username, setUsername] = useState("");
   const [comment, setComment] = useState("");
-  // const [book, setBook] = useState<Book | undefined>(undefined);
 
-  // useEffect(() => {
-  //   const selectedBook: Book | undefined = useBooks().books.find(
-  //     (book) => book.id === parseInt(String(id))
-  //   );
-  //   setBook(selectedBook);
-  // }, [id]);
+  const [book, setBook] = useState<Book>();
+  const [bookList, setBookList] = useState<Book[]>();
 
-    const [book, setBook] = useState<Book>();
-    const [bookList, setBookList] = useState<Book[]>();
+  enum BookStatus {
+      BOOKED_BY_USER,
+      NOT_AVAILABLE,
+      AVAILABLE,
+      BOOKING_NOT_AVAILABLE
+  }
+
+  const [bookStatus, setBookStatus] = useState(BookStatus.NOT_AVAILABLE);
+  const username = Cookies.get("username");
 
 
-    // const [availability, setAvailability] = useState(false);
+  useEffect(() => {
+      getBooks().then(response => {
+          setBookList(response);
+      });
 
-    enum BookStatus {
-        BOOKED_BY_USER,
-        NOT_AVAILABLE,
-        AVAILABLE,
-        BOOKING_NOT_AVAILABLE
-    }
 
-    const [bookStatus, setBookStatus] = useState(BookStatus.NOT_AVAILABLE);
+  }, []);
 
-    useEffect(() => {
-        getBooks().then(response => {
-            setBookList(response);
-        });
-    }, []);
+  useEffect(() => {
+      var selectedBook = bookList?.find(
+          (book) => book.id === parseInt(String(id))
+      );
 
-    useEffect(() => {
-
-        setBook(bookList?.find(
-            (book) => book.id === parseInt(String(id))
-        ));
+      if (!!selectedBook) {
+          getBookComments(selectedBook.id)
+              .then((comments) => {
+                  comments.forEach(bookComment => {
+                      console.log("bookComment")
+                      selectedBook.addComment(bookComment.username, bookComment.comment);
+                  });
+                  setBook(selectedBook);
+              });
+      }
 
     }, [bookList]);
 
-    useEffect(() => {
-        if (book?.getAvailable()) {
+  //set book status to borrow or return book
+  useEffect(() => {
+      if (book?.getAvailable()) {
             if (!!username) {
                 setBookStatus(BookStatus.AVAILABLE);
             } else {
@@ -78,28 +82,26 @@ const BookPage = () => {
             }
 
         } else {
-            if (book?.getBorrowedBy() === username) {
+          if (book?.getBorrowedBy() === username) {
                 setBookStatus(BookStatus.BOOKED_BY_USER);
             } else {
-                setBookStatus(BookStatus.NOT_AVAILABLE);
-            }
-        }
-    }, [book]);
-
-
-    const username = Cookies.get("username");
+              setBookStatus(BookStatus.NOT_AVAILABLE);
+          }
+      }
+  }, [book]);
 
   const handleFavoriteClick = () => {
     setIsFavorite(!isFavorite);
   };
 
-    const handleAddComment = () => {
-        if (book) {
-            book.addComment(username, comment);
-            // setUsername("");
-            setComment("");
-        }
-    };
+  const handleAddComment = () => {
+      if (book) {
+          postComment(book.id).then(resp => {
+              book.addComment(username, comment);
+              setComment("");
+          })
+      }
+  };
 
   // Debugging: Log the image URL to the console
   useEffect(() => {
@@ -108,43 +110,76 @@ const BookPage = () => {
     }
   }, [book]);
 
+  const getBookComments = async (bookId: number): Promise<Comment[]> => {
+    return await fetch('http://localhost:8080/api/books/' + bookId + "/comments", {
+        method: 'GET',
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        },
+    })
+    .then(response => response.json())
+    .then((CommentList: Comment[]) => {
+        // return [{"username": "xxx", "comment": "yyy"}];
+        return CommentList;
+    })
+    .catch((err) => {
+        console.log(err.message);
+        throw err;
+    });
+  };
 
+  const postComment = async (bookId: number) => {
+    return await fetch('http://localhost:8080/api/books/' + bookId + "/comments", {
+        method: 'POST',
+        body: JSON.stringify({
+            username: username,
+            comment: comment
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        },
+    })
+    .catch((err) => {
+        console.log(err.message);
+        throw err;
+    });
+};
 
-    const onBorrowClick = async (event: React.MouseEvent) => {
-        await fetch('http://localhost:8080/api/books', {
-            method: 'POST',
-            body: JSON.stringify({
-                username: username,
-                bookId: id
-            }),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-        })
-            .then((response) => {
-                setBookStatus(BookStatus.BOOKED_BY_USER);
-            })
-            .catch((err) => {
-                console.log(err.message);
-                throw err;
-            });
-    }
+  const onBorrowClick = async () => {
+      await fetch('http://localhost:8080/api/books', {
+          method: 'POST',
+          body: JSON.stringify({
+              username: username,
+              bookId: id
+          }),
+          headers: {
+              'Content-type': 'application/json; charset=UTF-8',
+          },
+      })
+          .then((response) => {
+              setBookStatus(BookStatus.BOOKED_BY_USER);
+          })
+          .catch((err) => {
+              console.log(err.message);
+              throw err;
+          });
+  }
 
-    const onReturnClick = async (event: React.MouseEvent) => {
-        await fetch('http://localhost:8080/api/books/' + id + '/return', {
-            method: 'PUT',
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-        })
-            .then((response) => {
-                setBookStatus(BookStatus.AVAILABLE);
-            })
-            .catch((err) => {
-                console.log(err.message);
-                throw err;
-            });
-    }
+  const onReturnClick = async () => {
+      await fetch('http://localhost:8080/api/books/' + id + '/return', {
+          method: 'PUT',
+          headers: {
+              'Content-type': 'application/json; charset=UTF-8',
+          },
+      })
+          .then((response) => {
+              setBookStatus(BookStatus.AVAILABLE);
+          })
+          .catch((err) => {
+              console.log(err.message);
+              throw err;
+          });
+  }
 
   if (!book) return <div>Book not found</div>;
 
@@ -261,14 +296,6 @@ const BookPage = () => {
             <Heading fontSize="lg" marginBottom="6" color={textColor}>
               Add a Comment
             </Heading>
-            <Input
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username"
-              marginBottom="2"
-              bg={bgColor}
-              color={textColor}
-            />
             <Textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
