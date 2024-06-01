@@ -29,11 +29,8 @@ const BookPage = () => {
   const cardBgColor = colorMode === "dark" ? "#74512D" : "#AF8F6F";
 
   const [isFavorite, setIsFavorite] = useState(false);
-  // const [username, setUsername] = useState("");
   const [comment, setComment] = useState("");
-
   const [book, setBook] = useState<Book>();
-  const [bookList, setBookList] = useState<Book[]>();
 
   enum BookStatus {
       BOOKED_BY_USER,
@@ -45,32 +42,26 @@ const BookPage = () => {
   const [bookStatus, setBookStatus] = useState(BookStatus.NOT_AVAILABLE);
   const username = Cookies.get("username");
 
-
+  //get book info with comments
   useEffect(() => {
-      getBooks().then(response => {
-          setBookList(response);
-      });
+      getBooks().then(books => {
+          var selectedBook = books.find(
+              (book) => book.id === parseInt(String(id))
+          );
 
-
-  }, []);
-
-  useEffect(() => {
-      var selectedBook = bookList?.find(
-          (book) => book.id === parseInt(String(id))
-      );
-
-      if (!!selectedBook) {
-          getBookComments(selectedBook.id)
-              .then((comments) => {
-                  comments.forEach(bookComment => {
-                      console.log("bookComment")
-                      selectedBook.addComment(bookComment.username, bookComment.comment);
+          if (!!selectedBook) {
+              getBookComments(selectedBook.id)
+                  .then((comments) => {
+                      comments.forEach(bookComment => {
+                          console.log("bookComment")
+                          selectedBook.addComment(bookComment.username, bookComment.comment);
+                      });
+                      setBook(selectedBook);
                   });
-                  setBook(selectedBook);
-              });
-      }
+          }
+      })
 
-    }, [bookList]);
+    }, []);
 
   //set book status to borrow or return book
   useEffect(() => {
